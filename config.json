@@ -1,0 +1,13 @@
+{
+    "url":[
+        {
+            "/GotWalletReq" : "/SendWalletReq",
+            "/RegTx" : "/SendRegTx",
+            "/GotTxsReq" : "/SendTxsReq",
+            "/GotDeatilinfo" : "/SendDetailinfo"
+        }
+    ],
+    "public" : "175.45.201.176",
+    "testIp" : "192.168.0.195",
+    "mspPort" : "8888"
+}
