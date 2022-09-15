@@ -17,10 +17,12 @@ var MSP_PORT string
 var Strategy string
 var Blacklist map[string]string
 
+var ConfigData Config
+
 // structure for config.json
 type Config struct {
 	URL struct {
-		GetWalletReq  string `json:"/GetWalletReq"`
+		GotWalletReq  string `json:"/GotWalletReq"`
 		RegTx         string `json:"/RegTx"`
 		GotTxsReq     string `json:"/GotTxsReq"`
 		GotDeatilinfo string `json:"/GotDeatilinfo"`
@@ -40,15 +42,15 @@ type Addr struct {
 // new node notify and try to connect to MSP
 func NewNode(myPort string, status string) {
 	// Load config.json
-	config := LoadConfig()
-	log.Println(config)
+	ConfigData = LoadConfig()
+	log.Println(ConfigData)
 
-	PUBLIC = config.Public
-	TEST_IP = config.TestIp
-	MSP_PORT = config.MspPort
+	PUBLIC = ConfigData.Public
+	TEST_IP = ConfigData.TestIp
+	MSP_PORT = ConfigData.MspPort
 
 	// Save initial hash
-	Hash = MakeHashOfConfig(config)
+	Hash = MakeHashOfConfig(ConfigData)
 
 	// Get my ip address as string type
 	var myIP string
@@ -77,7 +79,7 @@ func NewNode(myPort string, status string) {
 	}
 
 	// Get blacklist ip table from MSP
-	TableUpdate(res.Body)
+	UpdateBlacklist(res.Body)
 
 	// Init status variable
 	if status == "1" {
@@ -88,7 +90,7 @@ func NewNode(myPort string, status string) {
 }
 
 // Update blacklist ip table from MSP
-func TableUpdate(body io.Reader) {
+func UpdateBlacklist(body io.Reader) {
 	// Empty blacklist table
 	Blacklist = make(map[string]string, 0)
 

@@ -42,10 +42,10 @@ func checkConfig() bool {
 	return false
 }
 
-// create data of config file to make hash
+// Create data of config file to make hash
 func prepareData(config Config) []byte {
 	data := bytes.Join([][]byte{
-		[]byte(config.URL.GetWalletReq),
+		[]byte(config.URL.GotWalletReq),
 		[]byte(config.URL.GotTxsReq),
 		[]byte(config.URL.RegTx),
 		[]byte(config.URL.GotDeatilinfo),
@@ -56,7 +56,7 @@ func prepareData(config Config) []byte {
 	return data
 }
 
-// create hash of config file
+// Create hash of config file
 func MakeHashOfConfig(config Config) [32]byte {
 	data := prepareData(config)
 	hash := sha256.Sum256(data)
