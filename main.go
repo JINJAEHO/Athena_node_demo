@@ -14,26 +14,29 @@ func main() {
 	// Second argument is for node's port
 	arg_second := os.Args[2]
 
-	NewServer(arg_second, arg_first)
-
-	check := true
-	for {
-		check = checkConfig()
-		if !check {
-			log.Println("Config file was modified!!")
-			break
+	// Check if config file is modified with GoRoutine
+	go func() {
+		check := true
+		for {
+			ConfigData = LoadConfig()
+			check = checkConfig(ConfigData)
+			if !check {
+				log.Println("Config file was modified!!")
+				Hash = MakeHashOfConfig(ConfigData)
+			}
+			time.Sleep(time.Millisecond * 3000)
 		}
-		time.Sleep(time.Millisecond * 3000)
-	}
+	}()
+
+	NewServer(arg_second, arg_first)
+	ServerStart(arg_second)
+
 }
 
 var Hash [32]byte
 
 // Check if config file is modified by Hash
-func checkConfig() bool {
-	// Load config.json
-	config := LoadConfig()
-
+func checkConfig(config Config) bool {
 	tmpHash := MakeHashOfConfig(config)
 
 	if tmpHash == Hash {

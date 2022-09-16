@@ -4,15 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"os"
 )
-
-var PUBLIC string
-var TEST_IP string
-var MSP_PORT string
 
 var Strategy string
 var Blacklist map[string]string
@@ -45,10 +42,6 @@ func NewNode(myPort string, status string) {
 	ConfigData = LoadConfig()
 	log.Println(ConfigData)
 
-	PUBLIC = ConfigData.Public
-	TEST_IP = ConfigData.TestIp
-	MSP_PORT = ConfigData.MspPort
-
 	// Save initial hash
 	Hash = MakeHashOfConfig(ConfigData)
 
@@ -71,11 +64,19 @@ func NewNode(myPort string, status string) {
 	ipMarshal, _ := json.Marshal(myIpStruct)
 
 	// Notify that new node want to join to MSP
-	res, err := http.Post("http://"+TEST_IP+":"+MSP_PORT+"/RegNewNode", "application/json", bytes.NewBuffer(ipMarshal))
+	res, err := http.Post("http://"+ConfigData.TestIp+":"+ConfigData.MspPort+"/RegNewNode", "application/json", bytes.NewBuffer(ipMarshal))
 	log.Println(res)
+	if res != nil {
+		defer res.Body.Close()
+	}
 
 	if err != nil {
 		log.Println(err)
+	}
+
+	_, errs := io.Copy(ioutil.Discard, res.Body)
+	if errs != nil {
+		log.Println(errs)
 	}
 
 	// Get blacklist ip table from MSP
