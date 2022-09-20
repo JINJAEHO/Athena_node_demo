@@ -4,40 +4,43 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
 	"os"
 )
 
-var Strategy string
-var Blacklist map[string]string
+// structure for init value
+type valueSet struct {
+	Strategy  string
+	NodeName  string
+	MyPort    string
+	Group     string
+	Blacklist map[string]string
+}
 
-var ConfigData Config
+var InitValue valueSet
 
 // structure for config.json
 type Config struct {
-	URL struct {
-		GotWalletReq  string `json:"/GotWalletReq"`
-		RegTx         string `json:"/RegTx"`
-		GotTxsReq     string `json:"/GotTxsReq"`
-		GotDeatilinfo string `json:"/GotDeatilinfo"`
-	} `json:"url"`
-	Public  string `json:"public"`
-	TestIp  string `json:"testIp"`
-	MspPort string `json:"mspPort"`
+	URL      map[string]string `json:"url"`
+	Public   string            `json:"public"`
+	MspPort  string            `json:"mspPort"`
+	GatePort string            `json:"gatePort"`
 }
+
+var ConfigData Config
 
 // structure for Node info
 type Addr struct {
-	NewNode string `json:"node"`
-	Type    string `json:"type"`
-	Address string `json:"address"`
+	NewNode  string `json:"node"`
+	Type     string `json:"type"`
+	Address  string `json:"address"`
+	NodeName string `json:"nodeName"`
 }
 
 // new node notify and try to connect to MSP
-func NewNode(myPort string, status string) {
+func NewNode(myPort string, group string, name string) {
 	// Load config.json
 	ConfigData = LoadConfig()
 	log.Println(ConfigData)
@@ -59,58 +62,36 @@ func NewNode(myPort string, status string) {
 	var myIpStruct Addr
 	myIpStruct.Address = myIP
 	myIpStruct.NewNode = myPort
-	myIpStruct.Type = status
+	myIpStruct.Type = group
+	myIpStruct.NodeName = name
 
 	ipMarshal, _ := json.Marshal(myIpStruct)
 
 	// Notify that new node want to join to MSP
-	res, err := http.Post("http://"+ConfigData.TestIp+":"+ConfigData.MspPort+"/RegNewNode", "application/json", bytes.NewBuffer(ipMarshal))
-	log.Println(res)
-	if res != nil {
-		defer res.Body.Close()
-	}
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	_, errs := io.Copy(ioutil.Discard, res.Body)
-	if errs != nil {
-		log.Println(errs)
-	}
+	res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.MspPort+"/RegNewNode", "application/json", bytes.NewBuffer(ipMarshal))
+	log.Println("IP table from MSP:", res)
 
 	// Get blacklist ip table from MSP
 	UpdateBlacklist(res.Body)
 
 	// Init status variable
-	if status == "1" {
-		Strategy = "normal"
+	if group == "1" {
+		InitValue.Strategy = "normal"
 	} else {
-		Strategy = "abnormal"
+		InitValue.Strategy = "abnormal"
 	}
+	InitValue.NodeName = name
+	InitValue.MyPort = myPort
+	closeResponse(res, err)
 }
 
 // Update blacklist ip table from MSP
 func UpdateBlacklist(body io.Reader) {
 	// Empty blacklist table
-	Blacklist = make(map[string]string, 0)
+	InitValue.Blacklist = make(map[string]string, 0)
 
-	json.NewDecoder(body).Decode(&Blacklist)
-	for _, v := range Blacklist {
+	json.NewDecoder(body).Decode(&InitValue.Blacklist)
+	for _, v := range InitValue.Blacklist {
 		log.Println(v)
 	}
-}
-
-// Load config.json file
-func LoadConfig() Config {
-	file, err := os.Open("config.json")
-	defer file.Close()
-	if err != nil {
-		log.Println(err)
-	}
-
-	var config Config
-	json.NewDecoder(file).Decode(&config)
-
-	return config
 }
