@@ -6,14 +6,16 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
+	"time"
 )
 
 // Open or make directory and file for log
 func OpenLogFile(fileName string) *os.File {
 	// log file name is current day
-	//date := time.Now().Format("2006-01-02")
+	date := time.Now().Format("2006-01-02")
 	logFolderPath := "./log"
-	logFilePath := fmt.Sprintf("%s/%s.json", logFolderPath, fileName)
+	logFilePath := fmt.Sprintf("%s/%s-%s.txt", logFolderPath, date, fileName)
 	if _, err := os.Stat(logFolderPath); os.IsNotExist(err) {
 
 		os.MkdirAll(logFolderPath, 0777)
@@ -30,13 +32,15 @@ func OpenLogFile(fileName string) *os.File {
 		log.Println("open error")
 		panic(err)
 	}
-	if !isExistFile {
-		WriteLog(logFile, "{\n}")
-	} else {
+	// if !isExistFile {
+	// 	WriteLog(logFile, "{")
+	// } else {
+	// 	WriteLog(logFile, ",")
+	// }
+	// deleteLine(logFilePath, "}")
+	if isExistFile {
 		WriteLog(logFile, ",")
 	}
-
-	deleteLine(logFilePath, "}")
 
 	return logFile
 }
@@ -44,10 +48,37 @@ func OpenLogFile(fileName string) *os.File {
 // Write log
 func WriteLog(logFile *os.File, logData string) {
 	//log.SetOutput(logFile)
+
 	logger := log.New(logFile, "", 0)
-	// // logger := log.New(logFile, "", log.Ldate|log.Ltime)
-	logger.Println(logData)
-	logger.Println("}")
+	// logger := log.New(logFile, "", log.Ldate|log.Ltime)
+
+	if logData != "," {
+		strs := strings.Split(logData, ",")
+		date := time.Now().Format("2006-01-02 15:04:05")
+		logger.Println("{\n\"timestamp\":\"" + date + "\",")
+		logger.Print("\"Result\":")
+		if len(strs) > 2 {
+			logger.Println("{")
+			for i := 0; i < len(strs); i += 2 {
+				if i+2 > len(strs) {
+					logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\"")
+				} else {
+					logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\",")
+				}
+			}
+		} else {
+			logger.Print("\"" + strs[0] + "\":\"" + strs[1] + "\"")
+		}
+		logger.Print("}")
+	} else {
+		logger.Println(logData)
+	}
+	// logger.Println(logData)
+	// if logData != "{" && logData != "," {
+	// 	logger.Println("\t}\n}")
+	// } else {
+	// 	logger.Println("}")
+	// }
 }
 
 func deleteLine(path string, line string) {

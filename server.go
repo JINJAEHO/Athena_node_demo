@@ -72,7 +72,8 @@ func GetStatus(w http.ResponseWriter, req *http.Request) {
 	json.NewDecoder(req.Body).Decode(&groupName)
 	InitValue.Group = groupName
 
-	logData := "\"address\":\"" + ConfigData.Public + ":" + InitValue.MyPort + "\",\"memUsed\":\"" + usage + "%\",\"group\":\"" + InitValue.Group + "\""
+	logData := "address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + "%,group," + InitValue.Group
+	// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
 	logFile := OpenLogFile(InitValue.NodeName + "-Status")
 	defer logFile.Close()
 	WriteLog(logFile, logData)
@@ -116,7 +117,7 @@ func SendIP(semiBlack string) {
 
 	logFile := OpenLogFile(InitValue.NodeName + "-Warning")
 	defer logFile.Close()
-	WriteLog(logFile, "\"100\":\""+semiBlack+"\"")
+	WriteLog(logFile, "100,"+semiBlack)
 }
 
 // Return client ip from http request
@@ -173,7 +174,7 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	// Write log
 	logFile := OpenLogFile(InitValue.NodeName + "-Status")
 	defer logFile.Close()
-	WriteLog(logFile, "\"clientIP\":\""+ip+"\",\"url\":\""+url_path+"\"")
+	WriteLog(logFile, "clientIP,"+ip+",url,"+url_path)
 
 	if InitValue.Strategy == "abnormal" {
 		SendIP(ip)
@@ -190,7 +191,7 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 		vps := time.Since(startTime)
 		logFile := OpenLogFile(InitValue.NodeName + "-Performance")
 		defer logFile.Close()
-		WriteLog(logFile, "\"vps\":\""+fmt.Sprint(vps)+"\"")
+		WriteLog(logFile, "vps,"+fmt.Sprint(vps))
 	}
 
 }
