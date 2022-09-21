@@ -54,8 +54,6 @@ func WriteLog(logFile *os.File, logData string) {
 		strs := strings.Split(logData, ",")
 		date := time.Now().Format("2006-01-02 15:04:05")
 		logger.Println("{\n\"timestamp\":\"" + date + "\",")
-		logger.Print("\"Result\":")
-		logger.Println("{")
 		for i := 0; i < len(strs); i += 2 {
 			if i+2 >= len(strs) {
 				logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\"")
@@ -63,7 +61,7 @@ func WriteLog(logFile *os.File, logData string) {
 				logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\",")
 			}
 		}
-		logger.Print("}\n}\n]")
+		logger.Println("}\n]")
 	} else {
 		logger.Println(logData)
 	}

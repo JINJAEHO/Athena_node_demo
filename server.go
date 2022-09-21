@@ -72,7 +72,7 @@ func GetStatus(w http.ResponseWriter, req *http.Request) {
 	json.NewDecoder(req.Body).Decode(&groupName)
 	InitValue.Group = groupName
 
-	logData := "address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + "%,group," + InitValue.Group
+	logData := "address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
 	// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
 	logFile := OpenLogFile(InitValue.NodeName + "-Status")
 	defer logFile.Close()
@@ -188,7 +188,8 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 		targetURL := SelectURL(url_path)
 		res, err := http.Post("http://"+ConfigData.Public+":8888"+targetURL, "application/json", req.Body)
 		closeResponse(res, err)
-		vps := time.Since(startTime)
+		totalTime := time.Since(startTime)
+		vps := float64(totalTime) / float64(time.Millisecond)
 		logFile := OpenLogFile(InitValue.NodeName + "-Performance")
 		defer logFile.Close()
 		WriteLog(logFile, "vps,"+fmt.Sprint(vps))
