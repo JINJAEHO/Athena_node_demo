@@ -24,7 +24,7 @@ func NewServer(myPort string, group string, name string) {
 
 func ServerStart(myPort string) {
 	log.Println("노드 실행 : ", ConfigData.Public+":"+myPort)
-	if err := http.ListenAndServe(ConfigData.Public+":"+myPort, nil); err != nil {
+	if err := http.ListenAndServe(":"+myPort, nil); err != nil {
 		log.Println(err)
 		return
 	}
@@ -198,7 +198,7 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 
 // start pBFT for delay
 func SendReqPBFT(body io.Reader, ip string) {
-	res, err := http.Post("http://"+ip+"/req", "application/json", body)
+	res, err := http.Post("http://"+ip+"/StartDelay", "application/json", body)
 	closeResponse(res, err)
 }
 

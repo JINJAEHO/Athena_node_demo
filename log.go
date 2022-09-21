@@ -32,16 +32,14 @@ func OpenLogFile(fileName string) *os.File {
 		log.Println("open error")
 		panic(err)
 	}
-	// if !isExistFile {
-	// 	WriteLog(logFile, "{")
-	// } else {
-	// 	WriteLog(logFile, ",")
-	// }
-	// deleteLine(logFilePath, "}")
+
 	if isExistFile {
 		WriteLog(logFile, ",")
+	} else {
+		WriteLog(logFile, "[")
 	}
 
+	deleteLine(logFilePath, "]")
 	return logFile
 }
 
@@ -52,33 +50,23 @@ func WriteLog(logFile *os.File, logData string) {
 	logger := log.New(logFile, "", 0)
 	// logger := log.New(logFile, "", log.Ldate|log.Ltime)
 
-	if logData != "," {
+	if logData != "," && logData != "[" {
 		strs := strings.Split(logData, ",")
 		date := time.Now().Format("2006-01-02 15:04:05")
 		logger.Println("{\n\"timestamp\":\"" + date + "\",")
 		logger.Print("\"Result\":")
-		if len(strs) > 2 {
-			logger.Println("{")
-			for i := 0; i < len(strs); i += 2 {
-				if i+2 > len(strs) {
-					logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\"")
-				} else {
-					logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\",")
-				}
+		logger.Println("{")
+		for i := 0; i < len(strs); i += 2 {
+			if i+2 >= len(strs) {
+				logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\"")
+			} else {
+				logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\",")
 			}
-		} else {
-			logger.Print("\"" + strs[0] + "\":\"" + strs[1] + "\"")
 		}
-		logger.Print("}")
+		logger.Print("}\n}\n]")
 	} else {
 		logger.Println(logData)
 	}
-	// logger.Println(logData)
-	// if logData != "{" && logData != "," {
-	// 	logger.Println("\t}\n}")
-	// } else {
-	// 	logger.Println("}")
-	// }
 }
 
 func deleteLine(path string, line string) {
