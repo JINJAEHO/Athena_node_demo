@@ -42,6 +42,7 @@ func TcpStart(myPort string) {
 
 	for {
 		conn, err := ln.Accept() // 클라이언트가 연결되면 TCP 연결을 리턴
+		log.Println("conn", conn)
 		if err != nil {
 			fmt.Println(err)
 			continue
@@ -90,16 +91,18 @@ func GetStatus(conn net.Conn) {
 	for {
 		var groupName string
 		json.NewDecoder(conn).Decode(&groupName)
-		usage := GetMemoryUsage()
+		if len(groupName) > 0 {
+			usage := GetMemoryUsage()
 
-		InitValue.Group = groupName
+			InitValue.Group = groupName
 
-		logData := "clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
-		// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
-		logFile := OpenLogFile(InitValue.NodeName + "-Status")
-		defer logFile.Close()
-		WriteLog(logFile, logData)
-		json.NewEncoder(conn).Encode(usage)
+			logData := "clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
+			// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
+			logFile := OpenLogFile(InitValue.NodeName + "-Status")
+			defer logFile.Close()
+			WriteLog(logFile, logData)
+			json.NewEncoder(conn).Encode(usage)
+		}
 	}
 }
 
