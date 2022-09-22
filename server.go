@@ -88,18 +88,20 @@ func SelectURL(reqURL string) string {
 // Get ping and check my memory status and then send response with memory status to MSP
 func GetStatus(conn net.Conn) {
 	for {
-		usage := GetMemoryUsage()
-
 		var groupName string
 		json.NewDecoder(conn).Decode(&groupName)
-		InitValue.Group = groupName
+		if len(groupName) > 0 {
+			usage := GetMemoryUsage()
 
-		logData := "clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
-		// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
-		logFile := OpenLogFile(InitValue.NodeName + "-Status")
-		defer logFile.Close()
-		WriteLog(logFile, logData)
-		json.NewEncoder(conn).Encode(usage)
+			InitValue.Group = groupName
+
+			logData := "clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
+			// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
+			logFile := OpenLogFile(InitValue.NodeName + "-Status")
+			defer logFile.Close()
+			WriteLog(logFile, logData)
+			json.NewEncoder(conn).Encode(usage)
+		}
 	}
 }
 
