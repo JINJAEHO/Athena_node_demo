@@ -56,9 +56,17 @@ func WriteLog(logFile *os.File, logData string) {
 		logger.Println("{\n\"timestamp\":\"" + date + "\",")
 		for i := 0; i < len(strs); i += 2 {
 			if i+2 >= len(strs) {
-				logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\"")
+				if strs[i+1] == "null" {
+					logger.Print("\"" + strs[i] + "\":null")
+				} else {
+					logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\"")
+				}
 			} else {
-				logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\",")
+				if strs[i+1] == "null" {
+					logger.Print("\"" + strs[i] + "\":null,")
+				} else {
+					logger.Print("\"" + strs[i] + "\":\"" + strs[i+1] + "\",")
+				}
 			}
 		}
 		logger.Println("}\n]")

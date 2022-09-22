@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -10,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -30,11 +30,31 @@ func ServerStart(myPort string) {
 	}
 }
 
+func TcpStart(myPort string) {
+	port, _ := strconv.Atoi(myPort)
+	port += 100
+	ln, err := net.Listen("tcp", ""+fmt.Sprint(port))
+	if err != nil {
+		log.Println(err)
+	}
+	defer ln.Close()
+
+	for {
+		conn, err := ln.Accept() // 클라이언트가 연결되면 TCP 연결을 리턴
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+		defer conn.Close() // main 함수가 끝나기 직전에 TCP 연결을 닫음
+		go GetStatus(conn) // 패킷을 처리할 함수를 고루틴으로 실행
+	}
+}
+
 func setRoute() {
-	http.HandleFunc("/PingReq", GetStatus)
+	// http.HandleFunc("/PingReq", GetStatus)
 	http.HandleFunc("/ChangeStrategy", GetStrategy)
 	http.HandleFunc("/TableUpdateAlarm", TableUpdate)
-	http.HandleFunc("/DelayResult", delayResult)
+	//http.HandleFunc("/DelayResult", delayResult)
 
 	for k := range ConfigData.URL {
 		http.HandleFunc(k, ServiceReq)
@@ -65,11 +85,11 @@ func SelectURL(reqURL string) string {
 }
 
 // Get ping and check my memory status and then send response with memory status to MSP
-func GetStatus(w http.ResponseWriter, req *http.Request) {
+func GetStatus(conn net.Conn) {
 	usage := GetMemoryUsage()
 
 	var groupName string
-	json.NewDecoder(req.Body).Decode(&groupName)
+	json.NewDecoder(conn).Decode(&groupName)
 	InitValue.Group = groupName
 
 	logData := "address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
@@ -109,15 +129,14 @@ func TableUpdate(w http.ResponseWriter, req *http.Request) {
 }
 
 // Sending semi-blackIP to MSP
-func SendIP(semiBlack string) {
-	ipMarshal, _ := json.Marshal(semiBlack)
-
-	res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.MspPort+"/SendBlackIP", "application/json", bytes.NewBuffer(ipMarshal))
-	closeResponse(res, err)
-
+func SendIP(ip string, code string) {
 	logFile := OpenLogFile(InitValue.NodeName + "-Warning")
 	defer logFile.Close()
-	WriteLog(logFile, "100,"+semiBlack)
+	if code == "100" {
+		WriteLog(logFile, "100,"+ip+",200,null")
+	} else {
+		WriteLog(logFile, "100,null,200,"+ip)
+	}
 }
 
 // Return client ip from http request
@@ -177,23 +196,21 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	WriteLog(logFile, "clientIP,"+ip+",url,"+url_path)
 
 	if InitValue.Strategy == "abnormal" {
-		SendIP(ip)
-		res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.MspPort+"/GetLazyboy", "text/plain", nil)
-		var lazyboy string
-		json.NewDecoder(res.Body).Decode(&lazyboy)
-
-		closeResponse(res, err)
-		SendReqPBFT(req.Body, lazyboy)
+		SendIP(ip, "200")
 	} else {
-		targetURL := SelectURL(url_path)
-		res, err := http.Post("http://"+ConfigData.Public+":8888"+targetURL, "application/json", req.Body)
-		closeResponse(res, err)
-		totalTime := time.Since(startTime)
-		vps := float64(totalTime) / float64(time.Millisecond)
-		logFile := OpenLogFile(InitValue.NodeName + "-Performance")
-		defer logFile.Close()
-		WriteLog(logFile, "vps,"+fmt.Sprint(vps))
+		usage, _ := strconv.ParseFloat(GetMemoryUsage(), 64)
+		if usage >= 70 && usage < 75 {
+			SendIP(ip, "100")
+		}
 	}
+	targetURL := SelectURL(url_path)
+	res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.GatePort+targetURL, "application/json", req.Body)
+	closeResponse(res, err)
+	totalTime := time.Since(startTime)
+	vps := float64(totalTime) / float64(time.Millisecond)
+	logFile = OpenLogFile(InitValue.NodeName + "-Performance")
+	defer logFile.Close()
+	WriteLog(logFile, "vps,"+fmt.Sprint(vps))
 
 }
 

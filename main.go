@@ -51,4 +51,5 @@ func main() {
 
 	NewServer(arg_second, arg_first, arg_third)
 	ServerStart(arg_second)
+	go TcpStart(arg_second)
 }
