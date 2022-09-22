@@ -33,7 +33,8 @@ func ServerStart(myPort string) {
 func TcpStart(myPort string) {
 	port, _ := strconv.Atoi(myPort)
 	port += 100
-	ln, err := net.Listen("tcp", ""+fmt.Sprint(port))
+	log.Println(port)
+	ln, err := net.Listen("tcp", ":"+fmt.Sprint(port))
 	if err != nil {
 		log.Println(err)
 	}
@@ -97,6 +98,7 @@ func GetStatus(conn net.Conn) {
 	logFile := OpenLogFile(InitValue.NodeName + "-Status")
 	defer logFile.Close()
 	WriteLog(logFile, logData)
+	json.NewEncoder(conn).Encode(usage)
 }
 
 func GetMemoryUsage() string {
