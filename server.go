@@ -47,7 +47,7 @@ func TcpStart(myPort string) {
 			continue
 		}
 		defer conn.Close() // main 함수가 끝나기 직전에 TCP 연결을 닫음
-		go GetStatus(conn) // 패킷을 처리할 함수를 고루틴으로 실행
+		GetStatus(conn)    // 패킷을 처리할 함수를 고루틴으로 실행
 	}
 }
 
@@ -90,18 +90,16 @@ func GetStatus(conn net.Conn) {
 	for {
 		var groupName string
 		json.NewDecoder(conn).Decode(&groupName)
-		if len(groupName) > 0 {
-			usage := GetMemoryUsage()
+		usage := GetMemoryUsage()
 
-			InitValue.Group = groupName
+		InitValue.Group = groupName
 
-			logData := "clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
-			// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
-			logFile := OpenLogFile(InitValue.NodeName + "-Status")
-			defer logFile.Close()
-			WriteLog(logFile, logData)
-			json.NewEncoder(conn).Encode(usage)
-		}
+		logData := "clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
+		// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
+		logFile := OpenLogFile(InitValue.NodeName + "-Status")
+		defer logFile.Close()
+		WriteLog(logFile, logData)
+		json.NewEncoder(conn).Encode(usage)
 	}
 }
 
