@@ -11,4 +11,139 @@
 "memUsed":"21.177183",
 "group":""
 }
+,
+{
+"timestamp":"2022-09-22 20:00:57",
+"clientIP":"::1",
+"url":"/GotWalletReq",
+"address":null,
+"memUsed":null,
+"group":null
+}
+,
+{
+"timestamp":"2022-09-22 20:02:56",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"22.63935",
+"group":""
+}
+,
+{
+"timestamp":"2022-09-22 20:07:19",
+"clientIP":"::1",
+"url":"/GotWalletReq",
+"address":null,
+"memUsed":null,
+"group":null
+}
+,
+{
+"timestamp":"2022-09-22 20:40:33",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"24.264326",
+"group":""
+}
+,
+{
+"timestamp":"2022-09-22 20:42:39",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"20.981628",
+"group":""
+}
+,
+{
+"timestamp":"2022-09-22 20:42:40",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"20.989426",
+"group":""
+}
+,
+{
+"timestamp":"2022-09-22 20:42:41",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"21.017302",
+"group":""
+}
+,
+{
+"timestamp":"2022-09-22 20:42:42",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"21.02186",
+"group":""
+}
+,
+{
+"timestamp":"2022-09-22 20:42:43",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"21.801203",
+"group":""
+}
+,
+{
+"timestamp":"2022-09-22 20:42:44",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"21.789364",
+"group":""
+}
+,
+{
+"timestamp":"2022-09-22 20:42:45",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"21.794355",
+"group":""
+}
+,
+{
+"timestamp":"2022-09-22 20:43:58",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"20.324156",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-22 20:43:59",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"20.344683",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-22 20:44:00",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"20.422356",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-22 20:44:01",
+"clientIP":null,
+"url":null,
+"address":"192.168.35.72:4000",
+"memUsed":"20.425434",
+"group":"Current"
+}
 ]

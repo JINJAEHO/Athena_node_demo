@@ -87,18 +87,20 @@ func SelectURL(reqURL string) string {
 
 // Get ping and check my memory status and then send response with memory status to MSP
 func GetStatus(conn net.Conn) {
-	usage := GetMemoryUsage()
+	for {
+		usage := GetMemoryUsage()
 
-	var groupName string
-	json.NewDecoder(conn).Decode(&groupName)
-	InitValue.Group = groupName
+		var groupName string
+		json.NewDecoder(conn).Decode(&groupName)
+		InitValue.Group = groupName
 
-	logData := "address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
-	// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
-	logFile := OpenLogFile(InitValue.NodeName + "-Status")
-	defer logFile.Close()
-	WriteLog(logFile, logData)
-	json.NewEncoder(conn).Encode(usage)
+		logData := "clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
+		// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
+		logFile := OpenLogFile(InitValue.NodeName + "-Status")
+		defer logFile.Close()
+		WriteLog(logFile, logData)
+		json.NewEncoder(conn).Encode(usage)
+	}
 }
 
 func GetMemoryUsage() string {
@@ -195,19 +197,19 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	// Write log
 	logFile := OpenLogFile(InitValue.NodeName + "-Status")
 	defer logFile.Close()
-	WriteLog(logFile, "clientIP,"+ip+",url,"+url_path)
+	WriteLog(logFile, "clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
 
 	if InitValue.Strategy == "abnormal" {
-		SendIP(ip, "200")
+		SendIP(ip, "danger")
 	} else {
 		usage, _ := strconv.ParseFloat(GetMemoryUsage(), 64)
 		if usage >= 70 && usage < 75 {
-			SendIP(ip, "100")
+			SendIP(ip, "warning")
 		}
 	}
-	targetURL := SelectURL(url_path)
-	res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.GatePort+targetURL, "application/json", req.Body)
-	closeResponse(res, err)
+	// targetURL := SelectURL(url_path)
+	// res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.GatePort+targetURL, "application/json", req.Body)
+	// closeResponse(res, err)
 	totalTime := time.Since(startTime)
 	vps := float64(totalTime) / float64(time.Millisecond)
 	logFile = OpenLogFile(InitValue.NodeName + "-Performance")
