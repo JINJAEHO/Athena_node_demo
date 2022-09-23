@@ -16,7 +16,7 @@ type valueSet struct {
 	NodeName  string
 	MyPort    string
 	Group     string
-	Blacklist map[string]string
+	Blacklist []string
 }
 
 var InitValue valueSet
@@ -88,7 +88,7 @@ func NewNode(myPort string, group string, name string) {
 // Update blacklist ip table from MSP
 func UpdateBlacklist(body io.Reader) {
 	// Empty blacklist table
-	InitValue.Blacklist = make(map[string]string, 0)
+	InitValue.Blacklist = make([]string, 0)
 
 	json.NewDecoder(body).Decode(&InitValue.Blacklist)
 	for _, v := range InitValue.Blacklist {
