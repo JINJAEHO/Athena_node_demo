@@ -91,6 +91,7 @@ func UpdateBlacklist(body io.Reader) {
 	InitValue.Blacklist = make([]string, 0)
 
 	json.NewDecoder(body).Decode(&InitValue.Blacklist)
+	log.Println("len black", len(InitValue.Blacklist))
 	for _, v := range InitValue.Blacklist {
 		log.Println(v)
 	}

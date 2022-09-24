@@ -13,7 +13,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/process"
 )
 
@@ -41,6 +40,7 @@ func TcpStart(myPort string) {
 	defer ln.Close()
 
 	for {
+		log.Println("start tcp loop")
 		conn, err := ln.Accept() // 클라이언트가 연결되면 TCP 연결을 리턴
 		log.Println("conn", conn)
 		if err != nil {
@@ -48,7 +48,7 @@ func TcpStart(myPort string) {
 			continue
 		}
 		defer conn.Close() // main 함수가 끝나기 직전에 TCP 연결을 닫음
-		GetStatus(conn)    // 패킷을 처리할 함수를 고루틴으로 실행
+		go GetStatus(conn) // 패킷을 처리할 함수를 고루틴으로 실행
 	}
 }
 
@@ -107,16 +107,20 @@ func GetStatus(conn net.Conn) {
 }
 
 func GetMemoryUsage() string {
-	vm, _ := mem.VirtualMemory()
-	used := vm.Used
+	//vm, _ := mem.VirtualMemory()
+	//used := vm.Used
+	//total := vm.Total
 
 	pid := os.Getpid()
 	ps, _ := process.NewProcess(int32(pid))
-	mem, _ := ps.MemoryInfo()
-	percent, _ := ps.MemoryPercent()
-	vms := mem.VMS
+	Mem, _ := ps.MemoryInfo()
+	//percent, _ := ps.MemoryPercent()
+	vms := Mem.VMS
+	fmt.Println("vms:", vms)
+	fmt.Println("rss:", Mem.RSS)
 
-	usage := fmt.Sprint(((float32(used) * percent) / float32(vms)) * 100)
+	//usage := fmt.Sprint(((float32(total) * percent) / float32(vms)) * 100)
+	usage := fmt.Sprint(float32(Mem.RSS) / float32(vms))
 	return usage
 }
 
