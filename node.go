@@ -76,9 +76,9 @@ func NewNode(myPort string, group string, name string) {
 
 	// Init status variable
 	if group == "1" {
-		InitValue.Strategy = "normal"
+		InitValue.Strategy = "NORMAL"
 	} else {
-		InitValue.Strategy = "abnormal"
+		InitValue.Strategy = "ABNORMAL"
 	}
 	InitValue.NodeName = name
 	InitValue.MyPort = myPort

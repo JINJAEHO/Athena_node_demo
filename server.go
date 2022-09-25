@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/shirou/gopsutil/v3/mem"
 	"github.com/shirou/gopsutil/v3/process"
 )
 
@@ -40,7 +41,6 @@ func TcpStart(myPort string) {
 	defer ln.Close()
 
 	for {
-		log.Println("start tcp loop")
 		conn, err := ln.Accept() // 클라이언트가 연결되면 TCP 연결을 리턴
 		log.Println("conn", conn)
 		if err != nil {
@@ -107,20 +107,22 @@ func GetStatus(conn net.Conn) {
 }
 
 func GetMemoryUsage() string {
-	//vm, _ := mem.VirtualMemory()
+	vm, _ := mem.VirtualMemory()
 	//used := vm.Used
-	//total := vm.Total
+	total := vm.Total
 
 	pid := os.Getpid()
 	ps, _ := process.NewProcess(int32(pid))
 	Mem, _ := ps.MemoryInfo()
-	//percent, _ := ps.MemoryPercent()
+	percent, _ := ps.MemoryPercent()
 	vms := Mem.VMS
-	fmt.Println("vms:", vms)
-	fmt.Println("rss:", Mem.RSS)
-
-	//usage := fmt.Sprint(((float32(total) * percent) / float32(vms)) * 100)
-	usage := fmt.Sprint(float32(Mem.RSS) / float32(vms))
+	usage := fmt.Sprint(((float32(total) * (percent / 100.0)) / float32(vms)) * 100.0)
+	//usage := fmt.Sprint(100 * float32(Mem.RSS) / float32(vms))
+	cpuPercent, _ := ps.CPUPercent()
+	log.Println("=====================================================")
+	log.Println("cpu percent:", cpuPercent)
+	log.Println("memory percent:", percent)
+	log.Println("memory usage:", usage)
 	return usage
 }
 
@@ -206,7 +208,7 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	defer logFile.Close()
 	WriteLog(logFile, "clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
 
-	if InitValue.Strategy == "abnormal" {
+	if InitValue.Strategy == "ABNORMAL" {
 		SendIP(ip, "danger")
 	} else {
 		usage, _ := strconv.ParseFloat(GetMemoryUsage(), 64)
