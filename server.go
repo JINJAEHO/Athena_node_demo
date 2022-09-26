@@ -100,7 +100,9 @@ func GetStatus(conn net.Conn) {
 			// logFile := OpenLogFile(InitValue.NodeName + "-Status")
 			// defer logFile.Close()
 			// WriteLog(logFile, logData)
-			statusQue <- logData
+			go func() {
+				statusQue <- logData
+			}()
 			json.NewEncoder(conn).Encode(usage)
 		}
 	}
@@ -147,11 +149,15 @@ func SendIP(ip string, code string) {
 	// defer logFile.Close()
 	if code == "warning" {
 		data := "Nodename," + InitValue.NodeName + ",warning," + ip + ",danger,null"
-		warningQue <- data
+		go func() {
+			warningQue <- data
+		}()
 		//WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,"+ip+",danger,null")
 	} else if code == "danger" {
 		data := "Nodename," + InitValue.NodeName + ",warning,null,danger," + ip
-		warningQue <- data
+		go func() {
+			warningQue <- data
+		}()
 		//WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,null,danger,"+ip)
 	}
 }
@@ -213,7 +219,9 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	// defer logFile.Close()
 	// WriteLog(logFile, "Nodename,"+InitValue.NodeName+",clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
 	logData := "Nodename," + InitValue.NodeName + ",clientIP," + ip + ",url," + url_path + ",address,null,memUsed,null,group,null"
-	statusQue <- logData
+	go func() {
+		statusQue <- logData
+	}()
 
 	if InitValue.Strategy == "ABNORMAL" {
 		SendIP(ip, "danger")
@@ -231,7 +239,9 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	// logFile = OpenLogFile(InitValue.NodeName + "-Performance")
 	// defer logFile.Close()
 	// WriteLog(logFile, "Nodename,"+InitValue.NodeName+",vps,"+fmt.Sprint(vps))
-	performanceQue <- "Nodename," + InitValue.NodeName + ",vps," + fmt.Sprint(vps)
+	go func() {
+		performanceQue <- "Nodename," + InitValue.NodeName + ",vps," + fmt.Sprint(vps)
+	}()
 }
 
 // start pBFT for delay

@@ -20,15 +20,15 @@ func main() {
 	// Third argument is for node's name
 	arg_third := os.Args[3]
 
-	statusQue := make(chan string, 100)
-	performanceQue := make(chan string, 100)
-	warningQue := make(chan string, 100)
-
 	// Check msgQue channel and write log
 	go func() {
+		statusQue = make(chan string, 100)
+		performanceQue = make(chan string, 100)
+		warningQue = make(chan string, 100)
 		for {
 			select {
 			case msg := <-statusQue:
+				log.Println("statusQue")
 				logFile := OpenLogFile(InitValue.NodeName + "-Status")
 				defer logFile.Close()
 				WriteLog(logFile, msg)
