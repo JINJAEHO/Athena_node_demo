@@ -218,7 +218,7 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	// logFile := OpenLogFile(InitValue.NodeName + "-Status")
 	// defer logFile.Close()
 	// WriteLog(logFile, "Nodename,"+InitValue.NodeName+",clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
-	logData := "Nodename," + InitValue.NodeName + ",clientIP," + ip + ",url," + url_path + ",address,null,memUsed,null,group,null"
+	logData := "Nodename," + InitValue.NodeName + ",clientIP," + ip + ",url," + url_path + ",address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed,null,group," + InitValue.Group
 	go func() {
 		statusQue <- logData
 	}()
@@ -231,9 +231,9 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 			SendIP(ip, "warning")
 		}
 	}
-	// targetURL := SelectURL(url_path)
-	// res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.GatePort+targetURL, "application/json", req.Body)
-	// closeResponse(res, err)
+	targetURL := SelectURL(url_path)
+	res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.GatePort+targetURL, "application/json", req.Body)
+	closeResponse(res, err)
 	totalTime := time.Since(startTime)
 	vps := float64(totalTime) / float64(time.Millisecond)
 	// logFile = OpenLogFile(InitValue.NodeName + "-Performance")

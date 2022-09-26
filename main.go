@@ -28,7 +28,6 @@ func main() {
 		for {
 			select {
 			case msg := <-statusQue:
-				log.Println("statusQue")
 				logFile := OpenLogFile(InitValue.NodeName + "-Status")
 				defer logFile.Close()
 				WriteLog(logFile, msg)
