@@ -98,7 +98,7 @@ func GetStatus(conn net.Conn) {
 
 			InitValue.Group = groupName
 
-			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + fmt.Sprint(usage) + ",group," + InitValue.Group
+			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",cpuUsed," + fmt.Sprint(usage) + ",group," + InitValue.Group
 			// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
 			mutex.Lock()
 			logFile := OpenLogFile(InitValue.NodeName + "-Status")
