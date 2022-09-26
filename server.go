@@ -11,7 +11,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/shirou/gopsutil/v3/mem"
@@ -89,7 +88,6 @@ func SelectURL(reqURL string) string {
 
 // Get ping and check my memory status and then send response with memory status to MSP
 func GetStatus(conn net.Conn) {
-	mutex := new(sync.Mutex)
 	for {
 		var groupName string
 		json.NewDecoder(conn).Decode(&groupName)
@@ -99,12 +97,10 @@ func GetStatus(conn net.Conn) {
 			InitValue.Group = groupName
 
 			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",cpuUsed," + fmt.Sprint(usage) + ",group," + InitValue.Group
-			// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
-			mutex.Lock()
-			logFile := OpenLogFile(InitValue.NodeName + "-Status")
-			defer logFile.Close()
-			WriteLog(logFile, logData)
-			mutex.Unlock()
+			// logFile := OpenLogFile(InitValue.NodeName + "-Status")
+			// defer logFile.Close()
+			// WriteLog(logFile, logData)
+			statusQue <- logData
 			json.NewEncoder(conn).Encode(usage)
 		}
 	}
@@ -147,12 +143,16 @@ func TableUpdate(w http.ResponseWriter, req *http.Request) {
 
 // Sending semi-blackIP to MSP
 func SendIP(ip string, code string) {
-	logFile := OpenLogFile(InitValue.NodeName + "-Warning")
-	defer logFile.Close()
+	// logFile := OpenLogFile(InitValue.NodeName + "-Warning")
+	// defer logFile.Close()
 	if code == "warning" {
-		WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,"+ip+",danger,null")
+		data := "Nodename," + InitValue.NodeName + ",warning," + ip + ",danger,null"
+		warningQue <- data
+		//WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,"+ip+",danger,null")
 	} else if code == "danger" {
-		WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,null,danger,"+ip)
+		data := "Nodename," + InitValue.NodeName + ",warning,null,danger," + ip
+		warningQue <- data
+		//WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,null,danger,"+ip)
 	}
 }
 
@@ -206,24 +206,21 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	url_path := req.URL.Path
 
 	log.Println(url_path, "접속, ClientIP:", ip)
-	mutex := new(sync.Mutex)
+
 	// Write log
-	mutex.Lock()
-	logFile := OpenLogFile(InitValue.NodeName + "-Status")
-	defer logFile.Close()
-	WriteLog(logFile, "Nodename,"+InitValue.NodeName+",clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
-	mutex.Unlock()
+
+	// logFile := OpenLogFile(InitValue.NodeName + "-Status")
+	// defer logFile.Close()
+	// WriteLog(logFile, "Nodename,"+InitValue.NodeName+",clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
+	logData := "Nodename," + InitValue.NodeName + ",clientIP," + ip + ",url," + url_path + ",address,null,memUsed,null,group,null"
+	statusQue <- logData
 
 	if InitValue.Strategy == "ABNORMAL" {
-		mutex.Lock()
 		SendIP(ip, "danger")
-		mutex.Unlock()
 	} else {
 		usage, _ := strconv.ParseFloat(GetMemoryUsage(), 32)
 		if usage >= 1 && usage < 5 {
-			mutex.Lock()
 			SendIP(ip, "warning")
-			mutex.Unlock()
 		}
 	}
 	// targetURL := SelectURL(url_path)
@@ -231,12 +228,10 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	// closeResponse(res, err)
 	totalTime := time.Since(startTime)
 	vps := float64(totalTime) / float64(time.Millisecond)
-	mutex.Lock()
-	logFile = OpenLogFile(InitValue.NodeName + "-Performance")
-	defer logFile.Close()
-	WriteLog(logFile, "Nodename,"+InitValue.NodeName+",vps,"+fmt.Sprint(vps))
-	mutex.Unlock()
-
+	// logFile = OpenLogFile(InitValue.NodeName + "-Performance")
+	// defer logFile.Close()
+	// WriteLog(logFile, "Nodename,"+InitValue.NodeName+",vps,"+fmt.Sprint(vps))
+	performanceQue <- "Nodename," + InitValue.NodeName + ",vps," + fmt.Sprint(vps)
 }
 
 // start pBFT for delay
