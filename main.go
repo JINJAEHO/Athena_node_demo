@@ -3,8 +3,6 @@ package main
 import (
 	"log"
 	"os"
-	"runtime/debug"
-	"strconv"
 	"time"
 )
 
@@ -32,22 +30,22 @@ func main() {
 	}()
 
 	// Clean node's buffer when node is zombie
-	go func() {
-		for {
-			if InitValue.Group == "zombie" {
-				usageStr := GetMemoryUsage()
-				usage, _ := strconv.ParseFloat(usageStr, 32)
-				if usage >= 20 {
-					log.Println("Free Memory")
-					debug.FreeOSMemory()
-				} else {
-					time.Sleep(time.Millisecond * 1000)
-				}
-			} else {
-				time.Sleep(time.Millisecond * 3000)
-			}
-		}
-	}()
+	// go func() {
+	// 	for {
+	// 		if InitValue.Group == "zombie" {
+	// 			usageStr := GetMemoryUsage()
+	// 			usage, _ := strconv.ParseFloat(usageStr, 32)
+	// 			if usage >= 20 {
+	// 				log.Println("Free Memory")
+	// 				debug.FreeOSMemory()
+	// 			} else {
+	// 				time.Sleep(time.Millisecond * 1000)
+	// 			}
+	// 		} else {
+	// 			time.Sleep(time.Millisecond * 3000)
+	// 		}
+	// 	}
+	// }()
 
 	go TcpStart(arg_second)
 	NewServer(arg_second, arg_first, arg_third)

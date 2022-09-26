@@ -96,17 +96,18 @@ func GetStatus(conn net.Conn) {
 
 			InitValue.Group = groupName
 
-			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
+			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + fmt.Sprint(usage) + ",group," + InitValue.Group
 			// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
 			logFile := OpenLogFile(InitValue.NodeName + "-Status")
 			defer logFile.Close()
 			WriteLog(logFile, logData)
+
 			json.NewEncoder(conn).Encode(usage)
 		}
 	}
 }
 
-func GetMemoryUsage() string {
+func GetMemoryUsage() int {
 	vm, _ := mem.VirtualMemory()
 	//used := vm.Used
 	total := vm.Total
@@ -123,7 +124,7 @@ func GetMemoryUsage() string {
 	log.Println("cpu percent:", cpuPercent)
 	log.Println("memory percent:", percent)
 	log.Println("memory usage:", usage)
-	return usage
+	return int(cpuPercent)
 }
 
 // Get and change strategy
@@ -147,7 +148,7 @@ func SendIP(ip string, code string) {
 	defer logFile.Close()
 	if code == "warning" {
 		WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,"+ip+",danger,null")
-	} else {
+	} else if code == "danger" {
 		WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,null,danger,"+ip)
 	}
 }
@@ -211,10 +212,10 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	if InitValue.Strategy == "ABNORMAL" {
 		SendIP(ip, "danger")
 	} else {
-		usage, _ := strconv.ParseFloat(GetMemoryUsage(), 64)
-		if usage >= 70 && usage < 75 {
-			SendIP(ip, "warning")
-		}
+		// usage, _ := float32(GetMemoryUsage())
+		// if usage >= 1 && usage < 5 {
+		// 	SendIP(ip, "warning")
+		// }
 	}
 	// targetURL := SelectURL(url_path)
 	// res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.GatePort+targetURL, "application/json", req.Body)

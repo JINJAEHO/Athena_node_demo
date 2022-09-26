@@ -7,7 +7,7 @@
             "/GotDeatilinfo" : "/SendDetailinfo"
         }
     ,
-    "public" : "192.168.0.181",
+    "public" : "172.30.1.64",
     "mspPort" : "8888",
     "gatePort" : "7000"
 }
