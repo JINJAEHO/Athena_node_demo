@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/shirou/gopsutil/v3/mem"
@@ -88,6 +89,7 @@ func SelectURL(reqURL string) string {
 
 // Get ping and check my memory status and then send response with memory status to MSP
 func GetStatus(conn net.Conn) {
+	mutex := new(sync.Mutex)
 	for {
 		var groupName string
 		json.NewDecoder(conn).Decode(&groupName)
@@ -98,16 +100,17 @@ func GetStatus(conn net.Conn) {
 
 			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + fmt.Sprint(usage) + ",group," + InitValue.Group
 			// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
+			mutex.Lock()
 			logFile := OpenLogFile(InitValue.NodeName + "-Status")
 			defer logFile.Close()
 			WriteLog(logFile, logData)
-
+			mutex.Unlock()
 			json.NewEncoder(conn).Encode(usage)
 		}
 	}
 }
 
-func GetMemoryUsage() int {
+func GetMemoryUsage() string {
 	vm, _ := mem.VirtualMemory()
 	//used := vm.Used
 	total := vm.Total
@@ -124,7 +127,7 @@ func GetMemoryUsage() int {
 	log.Println("cpu percent:", cpuPercent)
 	log.Println("memory percent:", percent)
 	log.Println("memory usage:", usage)
-	return int(cpuPercent)
+	return fmt.Sprint(cpuPercent)
 }
 
 // Get and change strategy
@@ -203,28 +206,36 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	url_path := req.URL.Path
 
 	log.Println(url_path, "접속, ClientIP:", ip)
-
+	mutex := new(sync.Mutex)
 	// Write log
+	mutex.Lock()
 	logFile := OpenLogFile(InitValue.NodeName + "-Status")
 	defer logFile.Close()
 	WriteLog(logFile, "Nodename,"+InitValue.NodeName+",clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
+	mutex.Unlock()
 
 	if InitValue.Strategy == "ABNORMAL" {
+		mutex.Lock()
 		SendIP(ip, "danger")
+		mutex.Unlock()
 	} else {
-		// usage, _ := float32(GetMemoryUsage())
-		// if usage >= 1 && usage < 5 {
-		// 	SendIP(ip, "warning")
-		// }
+		usage, _ := strconv.ParseFloat(GetMemoryUsage(), 32)
+		if usage >= 1 && usage < 5 {
+			mutex.Lock()
+			SendIP(ip, "warning")
+			mutex.Unlock()
+		}
 	}
 	// targetURL := SelectURL(url_path)
 	// res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.GatePort+targetURL, "application/json", req.Body)
 	// closeResponse(res, err)
 	totalTime := time.Since(startTime)
 	vps := float64(totalTime) / float64(time.Millisecond)
+	mutex.Lock()
 	logFile = OpenLogFile(InitValue.NodeName + "-Performance")
 	defer logFile.Close()
 	WriteLog(logFile, "Nodename,"+InitValue.NodeName+",vps,"+fmt.Sprint(vps))
+	mutex.Unlock()
 
 }
 

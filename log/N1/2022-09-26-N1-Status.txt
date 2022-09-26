@@ -17030,4 +17030,304 @@ roup":null
 "memUsed":"0.8885289",
 "group":"Current"
 }
+,
+{
+"timestamp":"2022-09-26 18:52:46",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.5362965",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:52:47",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.60419524",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:57:41",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.8875964",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:58:04",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.5368674",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:58:05",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.58200836",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:58:06",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.65368265",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:58:07",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.7163975",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:58:08",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.736364",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:58:58",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.93160963",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:58:59",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.8884917",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:00",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.91070396",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:01",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.9222021",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:02",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.91357857",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:23",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.2993764",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:24",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.98798585",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:25",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.960295",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:26",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.9845899",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:27",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"0.98485106",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:28",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.0352693",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:49",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.2259698",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:50",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.0034502",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:56",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.24164",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:57",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.1134272",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:58",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.0596131",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 18:59:59",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.0741873",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 19:00:00",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.0402606",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 19:00:21",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.541755",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 19:00:22",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.0612856",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 19:00:23",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.0944955",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 19:00:24",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"172.30.1.64:4000",
+"memUsed":"1.0471892",
+"group":"Current"
+}
 ]
