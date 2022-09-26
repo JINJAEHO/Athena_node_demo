@@ -1,0 +1,191 @@
+[
+{
+"timestamp":"2022-09-26 10:10:10",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.52147603",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:11",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.6396956",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:12",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.6396956",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:13",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.6396956",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:14",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.6396956",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:15",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.6617541",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:16",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.6617541",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:17",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.68346786",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:18",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.68346786",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:19",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.68346786",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:20",
+"Nodename":"N1",
+"clientIP":"192.168.0.181",
+"url":"/GotWalletReq",
+"address":null,
+"memUsed":null,
+"group":null
+}
+,
+{
+"timestamp":"2022-09-26 10:10:20",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.70552635",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:21",
+"Nodename":"N1",
+"clientIP":"192.168.0.181",
+"url":"/GotWalletReq",
+"address":null,
+"memUsed":null,
+"group":null
+}
+,
+{
+"timestamp":"2022-09-26 10:10:21",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.7279295",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:22",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.7279295",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:23",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.7279295",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:24",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.74550724",
+"group":"Current"
+}
+,
+{
+"timestamp":"2022-09-26 10:10:24",
+"Nodename":"N1",
+"clientIP":"192.168.0.181",
+"url":"/GotWalletReq",
+"address":null,
+"memUsed":null,
+"group":null
+}
+,
+{
+"timestamp":"2022-09-26 10:10:25",
+"Nodename":"N1",
+"clientIP":null,
+"url":null,
+"address":"192.168.0.181:4000",
+"memUsed":"0.7734251",
+"group":"Current"
+}
+]

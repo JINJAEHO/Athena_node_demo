@@ -1,0 +1,8 @@
+[
+{
+"timestamp":"2022-09-26 10:10:24",
+"Nodename":"N1",
+"warning":null,
+"danger":"192.168.0.181"
+}
+]

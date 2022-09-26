@@ -96,7 +96,7 @@ func GetStatus(conn net.Conn) {
 
 			InitValue.Group = groupName
 
-			logData := "clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
+			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed," + usage + ",group," + InitValue.Group
 			// logData := "address:" + ConfigData.Public + ":" + InitValue.MyPort + ", memUsed:" + usage + "%, " + "group:" + InitValue.Group
 			logFile := OpenLogFile(InitValue.NodeName + "-Status")
 			defer logFile.Close()
@@ -145,10 +145,10 @@ func TableUpdate(w http.ResponseWriter, req *http.Request) {
 func SendIP(ip string, code string) {
 	logFile := OpenLogFile(InitValue.NodeName + "-Warning")
 	defer logFile.Close()
-	if code == "100" {
-		WriteLog(logFile, "100,"+ip+",200,null")
+	if code == "warning" {
+		WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,"+ip+",danger,null")
 	} else {
-		WriteLog(logFile, "100,null,200,"+ip)
+		WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,null,danger,"+ip)
 	}
 }
 
@@ -206,7 +206,7 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	// Write log
 	logFile := OpenLogFile(InitValue.NodeName + "-Status")
 	defer logFile.Close()
-	WriteLog(logFile, "clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
+	WriteLog(logFile, "Nodename,"+InitValue.NodeName+",clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
 
 	if InitValue.Strategy == "ABNORMAL" {
 		SendIP(ip, "danger")
@@ -223,7 +223,7 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	vps := float64(totalTime) / float64(time.Millisecond)
 	logFile = OpenLogFile(InitValue.NodeName + "-Performance")
 	defer logFile.Close()
-	WriteLog(logFile, "vps,"+fmt.Sprint(vps))
+	WriteLog(logFile, "Nodename,"+InitValue.NodeName+",vps,"+fmt.Sprint(vps))
 
 }
 

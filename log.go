@@ -14,7 +14,7 @@ import (
 func OpenLogFile(fileName string) *os.File {
 	// log file name is current day
 	date := time.Now().Format("2006-01-02")
-	logFolderPath := "./log"
+	logFolderPath := "./log/" + InitValue.NodeName
 	logFilePath := fmt.Sprintf("%s/%s-%s.txt", logFolderPath, date, fileName)
 	if _, err := os.Stat(logFolderPath); os.IsNotExist(err) {
 
