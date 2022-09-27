@@ -64,7 +64,10 @@ func main() {
 		for {
 			if InitValue.Group == "Zombie" {
 				cpu, _, _ := GetMemoryUsage()
-				cpuPer, _ := strconv.ParseFloat(cpu, 32)
+				cpuPer, err := strconv.ParseFloat(cpu, 32)
+				if err != nil {
+					log.Println("Cpu parsing error", err)
+				}
 				if cpuPer >= 20 {
 					log.Println("Free Memory")
 					debug.FreeOSMemory()

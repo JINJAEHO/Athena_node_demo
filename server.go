@@ -101,9 +101,6 @@ func GetStatus(conn net.Conn) {
 			InitValue.Group = groupName
 
 			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",cpuUsed," + fmt.Sprint(cpu) + ",group," + InitValue.Group
-			// logFile := OpenLogFile(InitValue.NodeName + "-Status")
-			// defer logFile.Close()
-			// WriteLog(logFile, logData)
 			go func() {
 				statusQue <- logData
 			}()
@@ -112,9 +109,9 @@ func GetStatus(conn net.Conn) {
 	}
 }
 
+// Get and calculate cpu and memory usage
 func GetMemoryUsage() (string, string, string) {
 	vm, _ := mem.VirtualMemory()
-	//used := vm.Used
 	total := vm.Total
 
 	pid := os.Getpid()
@@ -123,7 +120,6 @@ func GetMemoryUsage() (string, string, string) {
 	percent, _ := ps.MemoryPercent()
 	vms := Mem.VMS
 	usage := fmt.Sprint(((float32(total) * (percent / 100.0)) / float32(vms)) * 100.0)
-	//usage := fmt.Sprint(100 * float32(Mem.RSS) / float32(vms))
 	cpuPercent, _ := ps.CPUPercent()
 	return fmt.Sprint(cpuPercent), fmt.Sprint(percent), usage
 }
@@ -146,20 +142,16 @@ func TableUpdate(w http.ResponseWriter, req *http.Request) {
 
 // Sending semi-blackIP to MSP
 func SendIP(ip string, code string) {
-	// logFile := OpenLogFile(InitValue.NodeName + "-Warning")
-	// defer logFile.Close()
 	if code == "warning" {
 		data := "Nodename," + InitValue.NodeName + ",warning," + ip + ",danger,null"
 		go func() {
 			warningQue <- data
 		}()
-		//WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,"+ip+",danger,null")
 	} else if code == "danger" {
 		data := "Nodename," + InitValue.NodeName + ",warning,null,danger," + ip
 		go func() {
 			warningQue <- data
 		}()
-		//WriteLog(logFile, "Nodename,"+InitValue.NodeName+",warning,null,danger,"+ip)
 	}
 }
 
@@ -219,9 +211,7 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	log.Println("cpu percent:", cpu)
 	log.Println("memory percent:", mem)
 	log.Println("memory usage:", usage)
-	// logFile := OpenLogFile(InitValue.NodeName + "-Status")
-	// defer logFile.Close()
-	// WriteLog(logFile, "Nodename,"+InitValue.NodeName+",clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
+
 	logData := "Nodename," + InitValue.NodeName + ",clientIP," + ip + ",url," + url_path + ",address," + ConfigData.Public + ":" + InitValue.MyPort + ",cpuUsed," + cpu + ",group," + InitValue.Group
 	go func() {
 		statusQue <- logData
@@ -240,9 +230,7 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	// closeResponse(res, err)
 	totalTime := time.Since(startTime)
 	vps := float64(totalTime) / float64(time.Millisecond)
-	// logFile = OpenLogFile(InitValue.NodeName + "-Performance")
-	// defer logFile.Close()
-	// WriteLog(logFile, "Nodename,"+InitValue.NodeName+",vps,"+fmt.Sprint(vps))
+
 	go func() {
 		performanceQue <- "Nodename," + InitValue.NodeName + ",vps," + fmt.Sprint(vps)
 	}()
