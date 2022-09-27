@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"runtime/debug"
 	"strconv"
 	"time"
 )
@@ -61,12 +62,12 @@ func main() {
 	// Clean node's buffer when node is zombie
 	go func() {
 		for {
-			if InitValue.Group == "zombie" {
-				usageStr := GetMemoryUsage()
-				usage, _ := strconv.ParseFloat(usageStr, 32)
-				if usage >= 20 {
+			if InitValue.Group == "Zombie" {
+				cpu, _, _ := GetMemoryUsage()
+				cpuPer, _ := strconv.ParseFloat(cpu, 32)
+				if cpuPer >= 20 {
 					log.Println("Free Memory")
-					//debug.FreeOSMemory()
+					debug.FreeOSMemory()
 				} else {
 					time.Sleep(time.Millisecond * 1000)
 				}

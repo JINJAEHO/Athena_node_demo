@@ -92,23 +92,27 @@ func GetStatus(conn net.Conn) {
 		var groupName string
 		json.NewDecoder(conn).Decode(&groupName)
 		if len(groupName) > 0 {
-			usage := GetMemoryUsage()
+			cpu, mem, usage := GetMemoryUsage()
+			log.Println("=====================================================")
+			log.Println("cpu percent:", cpu)
+			log.Println("memory percent:", mem)
+			log.Println("memory usage:", usage)
 
 			InitValue.Group = groupName
 
-			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",cpuUsed," + fmt.Sprint(usage) + ",group," + InitValue.Group
+			logData := "Nodename," + InitValue.NodeName + ",clientIP,null,url,null,address," + ConfigData.Public + ":" + InitValue.MyPort + ",cpuUsed," + fmt.Sprint(cpu) + ",group," + InitValue.Group
 			// logFile := OpenLogFile(InitValue.NodeName + "-Status")
 			// defer logFile.Close()
 			// WriteLog(logFile, logData)
 			go func() {
 				statusQue <- logData
 			}()
-			json.NewEncoder(conn).Encode(usage)
+			json.NewEncoder(conn).Encode(cpu)
 		}
 	}
 }
 
-func GetMemoryUsage() string {
+func GetMemoryUsage() (string, string, string) {
 	vm, _ := mem.VirtualMemory()
 	//used := vm.Used
 	total := vm.Total
@@ -121,11 +125,7 @@ func GetMemoryUsage() string {
 	usage := fmt.Sprint(((float32(total) * (percent / 100.0)) / float32(vms)) * 100.0)
 	//usage := fmt.Sprint(100 * float32(Mem.RSS) / float32(vms))
 	cpuPercent, _ := ps.CPUPercent()
-	log.Println("=====================================================")
-	log.Println("cpu percent:", cpuPercent)
-	log.Println("memory percent:", percent)
-	log.Println("memory usage:", usage)
-	return fmt.Sprint(cpuPercent)
+	return fmt.Sprint(cpuPercent), fmt.Sprint(percent), usage
 }
 
 // Get and change strategy
@@ -134,6 +134,7 @@ func GetStrategy(w http.ResponseWriter, req *http.Request) {
 
 	var stgy string
 	json.NewDecoder(req.Body).Decode(&stgy)
+	log.Println("Change to", stgy)
 	InitValue.Strategy = stgy
 }
 
@@ -196,7 +197,6 @@ func getIP(r *http.Request) (string, error) {
 // HandleFunc about all of service requests
 func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	startTime := time.Now()
-	log.Println("Start time:", startTime)
 
 	ip, err := getIP(req)
 	if err != nil {
@@ -214,11 +214,15 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	log.Println(url_path, "접속, ClientIP:", ip)
 
 	// Write log
-
+	cpu, mem, usage := GetMemoryUsage()
+	log.Println("=====================================================")
+	log.Println("cpu percent:", cpu)
+	log.Println("memory percent:", mem)
+	log.Println("memory usage:", usage)
 	// logFile := OpenLogFile(InitValue.NodeName + "-Status")
 	// defer logFile.Close()
 	// WriteLog(logFile, "Nodename,"+InitValue.NodeName+",clientIP,"+ip+",url,"+url_path+",address,null,memUsed,null,group,null")
-	logData := "Nodename," + InitValue.NodeName + ",clientIP," + ip + ",url," + url_path + ",address," + ConfigData.Public + ":" + InitValue.MyPort + ",memUsed,null,group," + InitValue.Group
+	logData := "Nodename," + InitValue.NodeName + ",clientIP," + ip + ",url," + url_path + ",address," + ConfigData.Public + ":" + InitValue.MyPort + ",cpuUsed," + cpu + ",group," + InitValue.Group
 	go func() {
 		statusQue <- logData
 	}()
@@ -226,14 +230,14 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	if InitValue.Strategy == "ABNORMAL" {
 		SendIP(ip, "danger")
 	} else {
-		usage, _ := strconv.ParseFloat(GetMemoryUsage(), 32)
-		if usage >= 1 && usage < 5 {
+		cpuPer, _ := strconv.ParseFloat(cpu, 32)
+		if cpuPer >= 5 && cpuPer < 8 {
 			SendIP(ip, "warning")
 		}
 	}
-	targetURL := SelectURL(url_path)
-	res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.GatePort+targetURL, "application/json", req.Body)
-	closeResponse(res, err)
+	// targetURL := SelectURL(url_path)
+	// res, err := http.Post("http://"+ConfigData.Public+":"+ConfigData.GatePort+targetURL, "application/json", req.Body)
+	// closeResponse(res, err)
 	totalTime := time.Since(startTime)
 	vps := float64(totalTime) / float64(time.Millisecond)
 	// logFile = OpenLogFile(InitValue.NodeName + "-Performance")
@@ -242,6 +246,10 @@ func ServiceReq(w http.ResponseWriter, req *http.Request) {
 	go func() {
 		performanceQue <- "Nodename," + InitValue.NodeName + ",vps," + fmt.Sprint(vps)
 	}()
+	response := make(map[string]string)
+	w.Header().Set("Content-Type", "application/json")
+	response["key"] = "response"
+	json.NewEncoder(w).Encode(response)
 }
 
 // start pBFT for delay
